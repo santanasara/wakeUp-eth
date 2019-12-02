@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <script language="javascript" type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script language="javascript" type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/web3-min-js@1.0.0/web3.min.js"></script>
+    <script language="javascript" type="text/javascript" src="abi.js"></script>
+    </head>
+<body>
+
+<h2>Wake Up!</h2>
+
+<form>
+  Days<br>
+  <input type="number" name="days" value="30">
+  <button type="button" onclick="setHowManyDays()">Set days</button>
+  <br>
+  Wake up at:<br>
+  <input type="datetime" name="hours" value="5">
+  <button type="button" onclick="setHourToWakeUp()">Set hour</button>
+  <br><br>
+  <input type="submit" value="Submit">
+</form> 
+
+<script>
+    var wakeUpContract;
+    var userAccount;
+    var acc;
+    function startApp() {
+        var wakeUpAddress = "0x5fa9655d6429a2dc4679500792560a6eb499949c";
+        wakeUpContract = new web3.eth.Contract(abi, wakeUpAddress);
+        var accountInterval = setInterval(function () {
+            web3.eth.getAccounts().then(function (result) {
+                acc = result[0];
+            })
+            if (acc !== userAccount) {
+                userAccount = acc;
+                refreshData();
+            }
+        }, 100);
+    }
+    function setHourToWakeUp() {
+        return wakeUpContract.methods.setHourToWakeUp().call();
+    }
+    function setHowManyDays() {
+        return wakeUpContract.methods.setHowManyDays().call();
+    }
+    function setWakeUp() {
+        return wakeUpContract.methods.setWakeUp().call();
+    }
+    
+    // Padrão para detectar um web3 injetado.
+    window.addEventListener('load', function () {
+        web3Provider = null;
+        // Modern dapp browsers...
+        if (window.ethereum) {
+            web3Provider = window.ethereum;
+            try {
+                // Request account access
+                window.ethereum.enable();
+            } catch (error) {
+                // User denied account access...
+                console.error("User denied account access")
+            }
+        }
+        // Legacy dapp browsers...
+        else if (window.web3) {
+            web3Provider = window.web3.currentProvider;
+        }
+        // If no injected web3 instance is detected, fall back to Ganache
+        else {
+            console.log('No web3? You should consider trying MetaMask!')
+            web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
+        }
+        web3 = new Web3(web3Provider);
+        startApp()
+    })
+</script>
+
+</body>
+</html>
