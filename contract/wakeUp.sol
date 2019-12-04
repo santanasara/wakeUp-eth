@@ -1,16 +1,15 @@
 pragma solidity >= 0.4.22 < 0.6.0;
 pragma experimental ABIEncoderV2;
  
-contract wakeUp {
+contract WakeUpEarly {
    
    
     // Ranking schema
-    enum Stars { nan, bronze , silver, gold , platinum, diamond }
+    enum Stars { NaN , bronze , silver, gold , platinum, diamond }
    
  
     // Estrutura de um dorminhoco
     struct Sleeper {
-        address sleeperAdress;
         bool awake;
         uint lastDay;
         uint initMoney;
@@ -25,6 +24,8 @@ contract wakeUp {
     // Endereço do atual Usuario do contrato
     address chairperson;
     mapping(address => Sleeper) sleepers;
+    
+    
  
  
     // Evento para imutalibilizar no ABI pra acessar no JS
@@ -35,10 +36,11 @@ contract wakeUp {
     constructor() public payable{
            
         chairperson = msg.sender;
-        sleepers[chairperson].sleeperAdress = msg.sender;
         sleepers[chairperson].initMoney = msg.value;
+        sleepers[chairperson].rank = Stars.bronze;
        
     }
+   
    
    
    
@@ -68,11 +70,23 @@ contract wakeUp {
  
     }
    
+   
     // Funcionando!
     function getInitMoney() public view returns (uint){
         return sleepers[chairperson].initMoney;
     }
+    
+       
+    // Funcionando!
+    function getAccumulatedMoney() public view returns (uint){
+        return sleepers[chairperson].accumulatedMoney;
+    }
  
+     // Funcionando!
+    function getAccumulatedDays() public view returns (uint){
+        return sleepers[chairperson].accumulatedDays;
+    }
+    
     // Funcionando!
     function getHowManyDays() public view returns (uint) {
         return sleepers[chairperson].howManyDays;
@@ -84,8 +98,8 @@ contract wakeUp {
     }
    
     // Como retorna o Enum Type?
-    function getRank() public view returns(uint){
-        return uint(sleepers[chairperson].rank);
+    function getRank() public view returns(Stars){
+        return sleepers[chairperson].rank;
     }
    
     function setBronze() internal {
@@ -111,12 +125,9 @@ contract wakeUp {
     }
    
    
+
    
-/*    function setAccumulatedDays() internal {
-        sleepers[chairperson].lastDay = now - sleepers[chairperson].lastDay;
-    }*/
-   
-    function setRank() internal {
+    function checkAndUpdateRank() internal {
         if( sleepers[chairperson].accumulatedDays > 7) {
             setBronze();
         }
@@ -135,13 +146,51 @@ contract wakeUp {
     }
    
    
-   
-    //Os ranks não foram testados
-   
-    // Quais são as funções que faltam?
-    // acordar;
-    // tirar dinheiro;
-    // subir ranking de acordo com os dias que foi acordado;
-    // algo mais?
- 
+   // Funcionando
+    function getMidnightHourBasedInThatDay() internal view  returns (uint){
+        return (now / 1 days * 1 days);
+   }
+
+   // Funcionando
+
+    function checkHour(uint _howHour) internal view returns (bool){
+        if (now - getMidnightHourBasedInThatDay() < _howHour *  1 hours){
+            return true;
+        }
+        return false;
+
+    }
+    
+    
+    function getTest() public view returns (uint){
+    return (now - getMidnightHourBasedInThatDay());
+    }
+    
+    function getTest2() public view returns (uint){
+    return (1 / sleepers[chairperson].howManyDays);
+    }
+    
+    
+
+
+// Não funcionado
+    function alarmButton() public {
+        sleepers[chairperson].accumulatedMoney = sleepers[chairperson].initMoney;
+        
+        checkAndUpdateRank();
+        
+        if(checkHour(sleepers[chairperson].howHour) == true){
+            sleepers[chairperson].accumulatedDays = sleepers[chairperson].accumulatedDays + 1;
+        }else{
+
+            sleepers[chairperson].accumulatedMoney = sleepers[chairperson].accumulatedMoney - (
+            ((sleepers[chairperson].accumulatedMoney / 1) * (1 / sleepers[chairperson].howManyDays)) );
+
+            
+        }
+
+
+    }
+
+
 }
