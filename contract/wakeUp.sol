@@ -23,13 +23,14 @@ contract wakeUp{
  
     // Endereço do atual Usuario do contrato
     address chairperson;
+    address payable winner; 
     mapping(address => Sleeper) sleepers;
     
     
  
  
     // Evento para imutalibilizar no ABI pra acessar no JS
-    event WakeUp(Sleeper _person);
+    event WakeUp(bool resp);
  
  
  
@@ -43,13 +44,6 @@ contract wakeUp{
    
    
    
-   
-    function setWakeUp() public {
-       
-        sleepers[chairperson].awake = true;
-        emit WakeUp(sleepers[chairperson]);
-        sleepers[chairperson].awake = false;
-    }
    
     function getWakeUp() public view returns (bool){
         return sleepers[chairperson].awake;
@@ -69,7 +63,9 @@ contract wakeUp{
         sleepers[chairperson].howHour = _howHour;
  
     }
+    
     function setHourDayAndInitMoney(uint _howHour, uint _howManyDays, uint _initMoney) public payable {
+
         setHourToWakeUp(_howHour);
         setHowManyDays(_howManyDays);
         sleepers[chairperson].initMoney = _initMoney*msg.value;
@@ -179,23 +175,33 @@ contract wakeUp{
 
 
 // Não funcionado
-    function alarmButton() public {
+    function alarmButton() public onlyOwner {
         sleepers[chairperson].accumulatedMoney = sleepers[chairperson].initMoney;
         
         checkAndUpdateRank();
         
         if(checkHour(sleepers[chairperson].howHour) == true){
             sleepers[chairperson].accumulatedDays = sleepers[chairperson].accumulatedDays + 1;
+                    sleepers[chairperson].awake = true;
         }else{
 
-            sleepers[chairperson].accumulatedMoney = sleepers[chairperson].accumulatedMoney - (
-            ((sleepers[chairperson].accumulatedMoney / 1) * (1 / sleepers[chairperson].howManyDays)) );
-
+            sleepers[chairperson].accumulatedMoney = sleepers[chairperson].accumulatedMoney - sleepers[chairperson].accumulatedMoney/(sleepers[chairperson].howManyDays + uint(sleepers[chairperson].rank));
             
         }
+        
+        emit WakeUp(sleepers[chairperson].awake);
+        
+        sleepers[chairperson].awake = false;
+
 
 
     }
-
+    
+    function withdraw() external onlyOwner {
+        require(msg.sender == chairperson);
+        winner = msg.sender;
+        winner.transfer(address(this).balance / 2);
+    }
+    
 
 }

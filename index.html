@@ -71,7 +71,13 @@
                 <div class="card-body">
                   <h5 class="card-title">Quick, if its time, click here before its too late!</h5>
                   <button type="button" class="btn btn-primary btn-lg" onclick="alarmButton()">Wake up!</button>
+                  <br>
+                  <input type="datetime" class="form-control" id="wakeUpResponse" readonly>
                 </div>
+                <div class="card-body">
+                    <h5 class="card-title">Withdraw Your Money</h5>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="alarmButton()">Withdraw</button>
+                  </div>
               </div>
     </div>
     
@@ -99,7 +105,7 @@
     var userAccount;
     var acc;
     function startApp() {
-        var wakeUpAddress = "0xcaeccbfdd3c66b5f314f9920659512063a4a1b89";
+        var wakeUpAddress = "0x5efe4a545c79fd38474c32842d0e20c92339e6b5";
         wakeUpEarly = new web3.eth.Contract(abi, wakeUpAddress);
         var accountInterval = setInterval(function () {
             web3.eth.getAccounts().then(function (result) {
@@ -111,7 +117,14 @@
             }
         }, 100);
     }
-   
+
+    function wakeUp() {
+            return wakeUpEarly.methods.getWakeUp().call();
+        }
+
+    function refreshData() {
+        wakeUp().then((result) => {document.getElementById("wakeUp").innerHTML = result;});
+    }
 
     function registerDaysAndHours() {
         
@@ -123,9 +136,16 @@
     }
     function alarmButton()
     {
-        wakeUpEarly.methods.alarmButton().send({ from: userAccount, value: 1000});
+        wakeUpEarly.methods.alarmButton().send({ from: userAccount}).then(refreshData);
         return false;
     }
+
+    function withdraw()
+    {
+        wakeUpEarly.methods.withdraw().send({ from: userAccount });
+        return false;
+    }
+
     function setHowManyDays() {
         return wakeUpEarly.methods.setHowManyDays().call();
     }
@@ -134,7 +154,7 @@
     }
     function refreshData() {
 
-            document.getElementById("endereco").innerHTML = userAccount;
+            document.getElementById("wakeUpResponse").innerHTML = userAccount;
 
 
         }
