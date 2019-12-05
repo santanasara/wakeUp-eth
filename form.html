@@ -2,9 +2,9 @@
 <html>
  
 <head>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+       
     <script language="javascript" type="text/javascript"
        src="https://cdn.jsdelivr.net/npm/web3-min-js@1.0.0/web3.min.js"></script>
     <script language="javascript" type="text/javascript" src="abi.js"></script>
@@ -13,7 +13,7 @@
 </head>
  
 <body>
-
+        
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <div class="row align-items-center justify-content-center">
@@ -26,18 +26,46 @@
 </div>
 </div>
 
-
 <div class="container">
+        <div>
+                <h6 class="my-0">Current Address</h6>
+                <small class="text-muted" id="endereco">-</small>
+            </div>
     <div class="row">
-      <div class="col text-center">
-        <button type="button" class="btn btn-lg btn-primary" onclick="alarmButton()">Wake up! Chop Chop!</button>
-        <a href="form.html" class="btn btn-secondary btn-lg" role="button">Sign up</a>
-        <button type="button" class="btn btn-lg btn-light" onclick="withDrawDeposit()">Withdraw</button>
-      </div>
-    </div>
-  </div>
-
-
+        <div class="col-sm">
+            <div class="card" style="width: 50rem;">
+                <div class="card-header">
+                    <h5 class="card-title">Sign up form</h5>
+                </div>
+                
+                <div class="card-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Days:</label>
+                            <input type="number" class="form-control" id="days" value="30">
+                            <small id="emailHelp" class="form-text text-muted">Set for how many days you wish to sign up for</small>
+                        </div>
+    
+                        <div class="form-group">
+                            <label for="exampleInputEmail1"> Wake up at:</label>
+                            <input type="datetime" class="form-control" id="hour" value="5">
+                            <small id="emailHelp" class="form-text text-muted">Set hour you wish to wake up</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputEmail1"> Deposit:</label>
+                            <input type="datetime" class="form-control" id="depositMoney" value="1000000000000000000">
+                            <small id="emailHelp" class="form-text text-muted">Insert value of Ether in Wei</small>
+                        </div>
+                        <button type="button" class="btn btn-success" onclick="registerDaysAndHours()" >Submit</button>
+                        <a href="index.html" class="btn btn-danger" role="button">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    
+ 
+ 
+ 
 <script>
     var wakeUpEarly;
     var userAccount;
@@ -51,21 +79,27 @@
             })
             if (acc !== userAccount) {
                 userAccount = acc;
+                refreshData();
             }
         }, 100);
     }
    
-    function withDrawDeposit()
-    {
-        wakeUpEarly.methods.withdraw().call({from: userAccount})
+
+    function registerDaysAndHours() {
+        
+        var hour = document.getElementById("hour").value;
+        var days = document.getElementById("days").value;
+        var depositMoney = document.getElementById("depositMoney").value;
+        wakeUpEarly.methods.setHourDayAndInitMoney(hour, days, depositMoney).send({ from: userAccount, value: depositMoney});
         return false;
     }
-    function alarmButton()
-    {
-        wakeUpEarly.methods.alarmButton().send({ from: userAccount});
-        return false;
-    }
-    
+   
+    function refreshData() {
+
+            document.getElementById("endereco").innerHTML = userAccount;
+
+
+        }
     // Padrão para detectar um web3 injetado.
     window.addEventListener('load', function () {
         web3Provider = null;
