@@ -1,7 +1,7 @@
 pragma solidity >= 0.4.22 < 0.6.0;
 pragma experimental ABIEncoderV2;
  
-contract WakeUpEarly {
+contract wakeUp{
    
    
     // Ranking schema
@@ -61,13 +61,18 @@ contract WakeUpEarly {
         _;
     }
  
-    function setHowManyDays(uint _howManyDays) public {
+    function setHowManyDays(uint _howManyDays) internal {
         sleepers[chairperson].howManyDays = _howManyDays;
     }
    
-    function setHourToWakeUp(uint _howHour) public {
+    function setHourToWakeUp(uint _howHour) internal {
         sleepers[chairperson].howHour = _howHour;
  
+    }
+    function setHourDayAndInitMoney(uint _howHour, uint _howManyDays, uint _initMoney) public payable {
+        setHourToWakeUp(_howHour);
+        setHowManyDays(_howManyDays);
+        sleepers[chairperson].initMoney = _initMoney*msg.value;
     }
    
    

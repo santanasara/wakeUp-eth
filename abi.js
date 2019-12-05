@@ -11,11 +11,6 @@ var abi = [
         {
           "components": [
             {
-              "internalType": "address",
-              "name": "sleeperAdress",
-              "type": "address"
-            },
-            {
               "internalType": "bool",
               "name": "awake",
               "type": "bool"
@@ -94,35 +89,60 @@ var abi = [
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_howManyDays",
-          "type": "uint256"
-        }
-      ],
-      "name": "setHowManyDays",
-      "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "internalType": "uint256",
           "name": "_howHour",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_howManyDays",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_initMoney",
+          "type": "uint256"
         }
       ],
-      "name": "setHourToWakeUp",
+      "name": "setHourDayAndInitMoney",
       "outputs": [],
-      "payable": false,
-      "stateMutability": "nonpayable",
+      "payable": true,
+      "stateMutability": "payable",
       "type": "function"
     },
     {
       "constant": true,
       "inputs": [],
       "name": "getInitMoney",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getAccumulatedMoney",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getAccumulatedDays",
       "outputs": [
         {
           "internalType": "uint256",
@@ -170,6 +190,21 @@ var abi = [
       "name": "getRank",
       "outputs": [
         {
+          "internalType": "enum wakeUp.Stars",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getTest",
+      "outputs": [
+        {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
@@ -178,5 +213,29 @@ var abi = [
       "payable": false,
       "stateMutability": "view",
       "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "getTest2",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "alarmButton",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
     }
-  ]
+  ] 
